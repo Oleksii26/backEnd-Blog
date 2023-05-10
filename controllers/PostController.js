@@ -10,7 +10,18 @@ export const getAll = async (req, res) => {
         res.status(500).json({
             message: 'failed, dont give posts!'
         })
-    } 
+    }
+}
+export const getAllAndSort = async (req, res) => {
+    try {
+        const posts = await PostModel.find().sort(({ viewCount: -1 }))
+        res.json(posts)
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            message: 'failed, getAllAndSort'
+        })
+    }
 }
 export const getLastTags = async (req, res) => {
     try {
