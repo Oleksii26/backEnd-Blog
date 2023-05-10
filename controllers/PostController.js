@@ -3,7 +3,7 @@ import PostModel from '../models/post.js'
 
 export const getAll = async (req, res) => {
     try {
-        const posts = await PostModel.find().populate('user').exec()
+        const posts = await PostModel.find()
         res.json(posts)
     } catch (e) {
         console.log(e);
@@ -30,7 +30,6 @@ export const getOne = async (req, res) => {
     try {
         const postId = req.params.id
         const post = await PostModel.findById(postId)
-
         res.status(200).json(post)
     } catch (e) {
         console.log(e);

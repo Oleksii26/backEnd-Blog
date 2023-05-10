@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import multer from 'multer'
+import { v2 as cloudinary } from 'cloudinary'
+import fileUpload from 'express-fileupload'
 import cors from 'cors'
 import { loginValidation, postCreateValidation, registerValidation } from './validation.js'
 
@@ -9,26 +10,25 @@ import { login, register, getMe } from './controllers/userControllers.js'
 import { create, getAll, getLastTags, getOne, remove, update } from './controllers/PostController.js'
 import handleValidationError from './utils/handleValidationError.js'
 
-
 mongoose.connect('mongodb+srv://Oleksii:VO4IvtGDpYVpBd6C@cluster0.fa8qg7i.mongodb.net/test').
     then(() => console.log('DB ok')).
     catch((e) => console.log('DB error', e))
 
 const app = express()
-const storage = multer.diskStorage({
-    destination: (_, __, cb) => {
-        cb(null, 'uploads')
-    },
-    filename: (_, file, cb) => {
-        cb(null, file.originalname)
-    },
-})
-
-const upload = multer({ storage })
 
 app.use(express.json())
 app.use(cors())
-app.use('/uploads', express.static('uploads'))
+app.use(fileUpload({
+    useTempFiles: true,
+    limits: { fileSize: 50 * 150 * 120 }
+}))
+
+cloudinary.config({
+    cloud_name: "dtcpohmvh",
+    api_key: "416256211882687",
+    api_secret: "FMJlCXclATSnH1Anzi82ByFIRSg"
+});
+
 
 const PORT = 3001
 
@@ -36,9 +36,15 @@ app.post('/auth/register', registerValidation, /* handleValidationError, */ regi
 app.post('/auth/login', loginValidation, /* handleValidationError, */ login)
 app.get('/auth/me', chekAuth, getMe)
 
-app.post('/upload', chekAuth, upload.single('image'), (req, res) => {
 
-    res.json({ url: `/uploads/${req.file.originalname}` })
+app.post('/uploads', chekAuth, async (req, res) => {
+    const file = req.files.image
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+        public_id: `${Date.now}`,
+        resource_type: 'auto',
+        folder: 'uploads'
+    })
+    res.json({result})
 })
 
 app.get('/posts', /* chekAuth, */ getAll)
