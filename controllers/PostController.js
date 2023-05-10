@@ -3,14 +3,14 @@ import PostModel from '../models/post.js'
 
 export const getAll = async (req, res) => {
     try {
-        const posts = await PostModel.find()
+        const posts = await PostModel.find().populate('user').exec()
         res.json(posts)
     } catch (e) {
         console.log(e);
         res.status(500).json({
             message: 'failed, dont give posts!'
         })
-    }
+    } 
 }
 export const getLastTags = async (req, res) => {
     try {
@@ -29,7 +29,7 @@ export const getLastTags = async (req, res) => {
 export const getOne = async (req, res) => {
     try {
         const postId = req.params.id
-        const post = await PostModel.findById(postId)
+        const post = await PostModel.findById(postId).populate('user').exec()
         res.status(200).json(post)
     } catch (e) {
         console.log(e);
