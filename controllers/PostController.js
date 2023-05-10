@@ -14,7 +14,7 @@ export const getAll = async (req, res) => {
 }
 export const getAllAndSort = async (req, res) => {
     try {
-        const posts = await PostModel.find().sort(({ viewCount: -1 }))
+        const posts = await PostModel.find().sort(({ viewCount: -1 })).populate('user').exec()
         res.json(posts)
     } catch (e) {
         console.log(e);
