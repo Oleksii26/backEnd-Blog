@@ -3,7 +3,7 @@ import PostModel from '../models/post.js'
 
 export const getAll = async (req, res) => {
     try {
-        const posts = await PostModel.find().sort({createdAt : -1}).populate('user').exec()
+        const posts = await PostModel.find().sort({ createdAt: -1 }).populate('user').exec()
         res.json(posts)
     } catch (e) {
         console.log(e);
@@ -46,6 +46,18 @@ export const getOne = async (req, res) => {
         console.log(e);
         res.status(500).json({
             message: 'failed, dont give this posts'
+        })
+    }
+}
+export const getPostByTag = async (req, res) => {
+    try {
+        const tag = req.params.name
+        const post = await PostModel.find(({ tags: { $in: [tag] } }))
+        res.status(200).json(post)
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            message: 'failed, dont give this getPostByTag'
         })
     }
 }

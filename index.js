@@ -7,7 +7,7 @@ import { loginValidation, postCreateValidation, registerValidation } from './val
 
 import chekAuth from './utils/chekAuth.js'
 import { login, register, getMe } from './controllers/userControllers.js'
-import { create, getAll, getAllAndSort, getLastTags, getOne, remove, update } from './controllers/PostController.js'
+import { create, getAll, getAllAndSort, getLastTags, getOne, getPostByTag, remove, update } from './controllers/PostController.js'
 import handleValidationError from './utils/handleValidationError.js'
 
 mongoose.connect('mongodb+srv://Oleksii:VO4IvtGDpYVpBd6C@cluster0.fa8qg7i.mongodb.net/test').
@@ -50,6 +50,7 @@ app.post('/uploads', chekAuth, async (req, res) => {
 app.get('/posts', /* chekAuth, */ getAll)
 app.get('/popular', /* chekAuth, */ getAllAndSort)
 app.get('/tags', getLastTags)
+app.get('/tags/:name', getPostByTag)
 app.get('/posts/:id', chekAuth, getOne)
 app.post('/posts', chekAuth, postCreateValidation, /* handleValidationError, */ create)
 app.delete('/posts/:id', chekAuth, remove)
