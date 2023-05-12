@@ -40,9 +40,9 @@ app.get('/auth/me', chekAuth, getMe)
 app.post('/uploads', chekAuth, async (req, res) => {
     const file = req.files.image
     const result = await cloudinary.uploader.upload(file.tempFilePath, {
-        public_id: `${Date.now}`,
+        public_id: `${new Date()}`,
         resource_type: 'auto',
-        folder: 'uploads'
+        folder: 'image'
     })
     res.json({ result })
 })
